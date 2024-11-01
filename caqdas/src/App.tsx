@@ -42,11 +42,6 @@ function App() {
     const selectedText = selection ? selection.toString() : '';
 
     if (selectedText) {
-      // const fullText = text;
-
-      // const highlighted = fullText.replace(selectedText, `<span class="highlight">${selectedText}</span>`);
-      // setHighlightedText(highlighted);
-
       const newTextRecord : IText = {
         text: selectedText,
         type: "highlighted",
@@ -111,7 +106,6 @@ function App() {
           updateHighlightedText(newHighlights);
         }        
       });
-      console.log("SALIMOS DE PAPA.PARSE")
     } catch (error) {
       console.error('Error loading highlights:', error);
     }
@@ -128,15 +122,11 @@ function App() {
     setHighlightedText(updatedText);
   };
 
-  useEffect(() => {
-    console.log('Text records:', textRecords);
-  }, [textRecords]);
-
   return (
     <>
       <div 
         onMouseUp={handleMouseUp} 
-        dangerouslySetInnerHTML={{ __html: highlightedText }} // || text
+        dangerouslySetInnerHTML={{ __html: highlightedText }}
       />
       <button onClick={downloadTextRecordsCSV}>Download Text Records CSV</button>
       <button onClick={downloadTagRecordsCSV}>Download Tag Records CSV</button>
