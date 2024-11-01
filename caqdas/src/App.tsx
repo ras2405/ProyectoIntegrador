@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { saveAs } from 'file-saver';
 import * as Papa from 'papaparse';
@@ -33,7 +33,7 @@ const text = "In a quiet village surrounded by mountains and lush forests, " +
 
 
 function App() {
-  const [highlightedText, setHighlightedText] = useState('');
+  const [highlightedText, setHighlightedText] = useState(text);
   const [textRecords, setTextRecords] = useState<IText[]>([]);
   const [tagRecords, setTagRecords] = useState<ITag[]>([]);
 
@@ -42,10 +42,10 @@ function App() {
     const selectedText = selection ? selection.toString() : '';
 
     if (selectedText) {
-      const fullText = text;
+      // const fullText = text;
 
-      const highlighted = fullText.replace(selectedText, `<span class="highlight">${selectedText}</span>`);
-      setHighlightedText(highlighted);
+      // const highlighted = fullText.replace(selectedText, `<span class="highlight">${selectedText}</span>`);
+      // setHighlightedText(highlighted);
 
       const newTextRecord : IText = {
         text: selectedText,
@@ -64,6 +64,7 @@ function App() {
 
       setTextRecords([...textRecords, newTextRecord]);
       setTagRecords([...tagRecords, newTagRecord]);
+      updateHighlightedText([...textRecords, newTextRecord]); // Actualiza con todos los resaltados
     }
   };
 
@@ -71,7 +72,7 @@ function App() {
     if (textRecords.length > 0) {
       const csv = Papa.unparse(textRecords);
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      saveAs(blob, 'text_records.csv');
+      saveAs(blob, 'highlights.csv');
     }
   };
 
@@ -83,14 +84,63 @@ function App() {
     }
   };
 
+  const loadHighlightsFromCSV = async () => {
+    try {
+      const response = await fetch('/highlights.csv'); // Asegúrate de que el archivo esté en la carpeta public
+      const text = await response.text();
+      Papa.parse(text, {
+        header: true,
+        dynamicTyping: true,
+        complete: (results) => {
+          // Supongamos que cada registro en el CSV tiene un campo 'text' que queremos utilizar
+          const newHighlights = results.data.map((row: any) => ({
+            text: row.text,
+            type: "highlighted",
+            user: "current_user",
+            projectName: "My Project",
+            timestamp: new Date().toISOString(),
+            stage: "draft",
+            tag: row.tag || "default_tag"
+          }));
+          setTextRecords(newHighlights);
+          // Aquí podrías actualizar el estado de tagRecords si también hay tags en el CSV
+          const newTagRecords = newHighlights.map(record => ({
+            tag: record.tag
+          }));
+          setTagRecords(newTagRecords);
+          updateHighlightedText(newHighlights);
+        }        
+      });
+      console.log("SALIMOS DE PAPA.PARSE")
+    } catch (error) {
+      console.error('Error loading highlights:', error);
+    }
+  };
+
+  const updateHighlightedText = (highlights: IText[]) => {
+    let updatedText = text;
+
+    highlights.forEach(highlight => {
+      const escapedText = highlight.text.replace(/[-\/\\^$.*+?()[\]{}|~]/g, '\\$&'); // Escapar caracteres especiales
+      updatedText = updatedText.replace(new RegExp(escapedText, 'g'), `<span class="highlight">${highlight.text}</span>`);
+    });
+
+    setHighlightedText(updatedText);
+  };
+
+  useEffect(() => {
+    console.log('Text records:', textRecords);
+  }, [textRecords]);
+
   return (
     <>
       <div 
         onMouseUp={handleMouseUp} 
-        dangerouslySetInnerHTML={{ __html: highlightedText || text }}
+        dangerouslySetInnerHTML={{ __html: highlightedText }} // || text
       />
       <button onClick={downloadTextRecordsCSV}>Download Text Records CSV</button>
       <button onClick={downloadTagRecordsCSV}>Download Tag Records CSV</button>
+      <button onClick={loadHighlightsFromCSV}>Load Highlights from CSV</button> {/* Botón para cargar highlights */}
     </>
   )
 }
