@@ -1,36 +1,33 @@
-import { useEffect, useState } from 'react'
-import './App.css'
+import { useEffect, useState } from 'react';
+import './App.css';
 import { saveAs } from 'file-saver';
 import * as Papa from 'papaparse';
 import { ITag, IText } from './Interfaces';
 
-const text = "In a quiet village surrounded by mountains and lush forests, " +
-"lived a young man named Teo, whose heart always longed for adventure. " +
-"Teo worked as a carpenter in his grandfather’s workshop, but his thoughts constantly " +
-"wandered to stories of hidden treasures and magical creatures said to dwell in the deepest corners of the woods. " +
-"One autumn afternoon, as the wind played with golden leaves, " +
-"Teo decided it was time to discover for himself whether those old legends were true.\n\n" +
-  
-"With a light backpack and a hand-drawn map, Teo ventured into the forest. The air was filled with the scent of pine, " +
-"and the gentle murmur of a nearby stream guided his way. He walked for hours until the sun began to slip behind the mountains, " +
-"and that was when he heard a strange, almost musical whisper. Following the sound, " +
-"he found a clearing where an old man with a white beard and eyes as bright as stars sat on a moss-covered stone. " +
-"The old man smiled at him, as if he had been expecting Teo, and said, 'Teo, I know you seek adventure, " +
-"but the greatest rewards are not always gold and jewels.'\n\n" +
-
-"Curious, Teo sat down to listen. The old man told him that the forest held secrets far more precious than any treasure, " +
-"and that only those who could listen with their hearts would understand them. " +
-"As they talked, Teo felt a change in the air, as if the entire forest was breathing in harmony. " +
-"It was then that the old man showed him a stream where fish swam in perfect circles, " +
-"creating shimmering reflections that looked like crystal dancers. " +
-"'This is the true treasure, the magic of the simple things,' " +
-"the old man whispered before fading away like mist in the last ray of sunlight.\n\n" +
-
-"Teo returned to the village with a calm smile. He no longer dreamed of distant adventures, " +
-"for he now understood that the world’s wonders were there, in every corner of the forest he had learned to see with new eyes. " +
-"And so, every evening, he returned to the clearing to remember that life was full of secrets waiting to be discovered, " +
-"as long as one knew how to truly see them.";
-
+const text =
+  'In a quiet village surrounded by mountains and lush forests, ' +
+  'lived a young man named Teo, whose heart always longed for adventure. ' +
+  'Teo worked as a carpenter in his grandfather’s workshop, but his thoughts constantly ' +
+  'wandered to stories of hidden treasures and magical creatures said to dwell in the deepest corners of the woods. ' +
+  'One autumn afternoon, as the wind played with golden leaves, ' +
+  'Teo decided it was time to discover for himself whether those old legends were true.\n\n' +
+  'With a light backpack and a hand-drawn map, Teo ventured into the forest. The air was filled with the scent of pine, ' +
+  'and the gentle murmur of a nearby stream guided his way. He walked for hours until the sun began to slip behind the mountains, ' +
+  'and that was when he heard a strange, almost musical whisper. Following the sound, ' +
+  'he found a clearing where an old man with a white beard and eyes as bright as stars sat on a moss-covered stone. ' +
+  "The old man smiled at him, as if he had been expecting Teo, and said, 'Teo, I know you seek adventure, " +
+  "but the greatest rewards are not always gold and jewels.'\n\n" +
+  'Curious, Teo sat down to listen. The old man told him that the forest held secrets far more precious than any treasure, ' +
+  'and that only those who could listen with their hearts would understand them. ' +
+  'As they talked, Teo felt a change in the air, as if the entire forest was breathing in harmony. ' +
+  'It was then that the old man showed him a stream where fish swam in perfect circles, ' +
+  'creating shimmering reflections that looked like crystal dancers. ' +
+  "'This is the true treasure, the magic of the simple things,' " +
+  'the old man whispered before fading away like mist in the last ray of sunlight.\n\n' +
+  'Teo returned to the village with a calm smile. He no longer dreamed of distant adventures, ' +
+  'for he now understood that the world’s wonders were there, in every corner of the forest he had learned to see with new eyes. ' +
+  'And so, every evening, he returned to the clearing to remember that life was full of secrets waiting to be discovered, ' +
+  'as long as one knew how to truly see them.';
 
 function App() {
   const [highlightedText, setHighlightedText] = useState(text);
@@ -42,18 +39,18 @@ function App() {
     const selectedText = selection ? selection.toString() : '';
 
     if (selectedText) {
-      const newTextRecord : IText = {
+      const newTextRecord: IText = {
         text: selectedText,
-        type: "highlighted",
-        user: "current_user",
-        projectName: "My Project",
+        type: 'highlighted',
+        user: 'current_user',
+        projectName: 'My Project',
         timestamp: new Date().toISOString(),
-        stage: "draft",
-        tag: "default_tag"
+        stage: 'draft',
+        tag: 'default_tag',
       };
 
-      const newTagRecord : ITag = {
-        tag: "default_tag",
+      const newTagRecord: ITag = {
+        tag: 'default_tag',
         // color: "yellow"
       };
 
@@ -90,21 +87,21 @@ function App() {
           // Supongamos que cada registro en el CSV tiene un campo 'text' que queremos utilizar
           const newHighlights = results.data.map((row: any) => ({
             text: row.text,
-            type: "highlighted",
-            user: "current_user",
-            projectName: "My Project",
+            type: 'highlighted',
+            user: 'current_user',
+            projectName: 'My Project',
             timestamp: new Date().toISOString(),
-            stage: "draft",
-            tag: row.tag || "default_tag"
+            stage: 'draft',
+            tag: row.tag || 'default_tag',
           }));
           setTextRecords(newHighlights);
           // Aquí podrías actualizar el estado de tagRecords si también hay tags en el CSV
-          const newTagRecords = newHighlights.map(record => ({
-            tag: record.tag
+          const newTagRecords = newHighlights.map((record) => ({
+            tag: record.tag,
           }));
           setTagRecords(newTagRecords);
           updateHighlightedText(newHighlights);
-        }        
+        },
       });
     } catch (error) {
       console.error('Error loading highlights:', error);
@@ -114,9 +111,15 @@ function App() {
   const updateHighlightedText = (highlights: IText[]) => {
     let updatedText = text;
 
-    highlights.forEach(highlight => {
-      const escapedText = highlight.text.replace(/[-\/\\^$.*+?()[\]{}|~]/g, '\\$&'); // Escapar caracteres especiales
-      updatedText = updatedText.replace(new RegExp(escapedText, 'g'), `<span class="highlight">${highlight.text}</span>`);
+    highlights.forEach((highlight) => {
+      const escapedText = highlight.text.replace(
+        /[-\/\\^$.*+?()[\]{}|~]/g,
+        '\\$&'
+      ); // Escapar caracteres especiales
+      updatedText = updatedText.replace(
+        new RegExp(escapedText, 'g'),
+        `<span class="highlight">${highlight.text}</span>`
+      );
     });
 
     setHighlightedText(updatedText);
@@ -124,15 +127,22 @@ function App() {
 
   return (
     <>
-      <div 
-        onMouseUp={handleMouseUp} 
-        dangerouslySetInnerHTML={{ __html: highlightedText }}
+      <div
+        onMouseUp={handleMouseUp}
+        dangerouslySetInnerHTML={{
+          __html: highlightedText.replace(/\n/g, '<br/>'),
+        }}
       />
-      <button onClick={downloadTextRecordsCSV}>Download Text Records CSV</button>
+      <button onClick={downloadTextRecordsCSV}>
+        Download Text Records CSV
+      </button>
       <button onClick={downloadTagRecordsCSV}>Download Tag Records CSV</button>
-      <button onClick={loadHighlightsFromCSV}>Load Highlights from CSV</button> {/* Botón para cargar highlights */}
+      <button onClick={loadHighlightsFromCSV}>
+        Load Highlights from CSV
+      </button>{' '}
+      {/* Botón para cargar highlights */}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
