@@ -1,5 +1,4 @@
 import { useState } from 'react';
-// import './App.css';
 import { saveAs } from 'file-saver';
 import * as Papa from 'papaparse';
 import { ITag, IText } from '../../Interfaces';
