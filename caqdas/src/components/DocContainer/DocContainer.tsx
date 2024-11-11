@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { saveAs } from 'file-saver';
 import * as Papa from 'papaparse';
 import { ITag, IText } from '../../Interfaces';
+// import { LoremIpsum } from 'lorem-ipsum';
 
 const text =
   'In a quiet village surrounded by mountains and lush forests, ' +
@@ -27,6 +28,19 @@ const text =
   'for he now understood that the world’s wonders were there, in every corner of the forest he had learned to see with new eyes. ' +
   'And so, every evening, he returned to the clearing to remember that life was full of secrets waiting to be discovered, ' +
   'as long as one knew how to truly see them.';
+
+// const lorem = new LoremIpsum({
+//   sentencesPerParagraph: {
+//     max: 8,
+//     min: 4,
+//   },
+//   wordsPerSentence: {
+//     max: 16,
+//     min: 4,
+//   },
+// });
+
+// const text = lorem.generateParagraphs(4);
 
 export const DocContainer = () => {
   const [highlightedText, setHighlightedText] = useState(text);
@@ -125,7 +139,7 @@ export const DocContainer = () => {
   };
 
   return (
-    <>
+    <div>
       <div
         onMouseUp={handleMouseUp}
         dangerouslySetInnerHTML={{
@@ -139,6 +153,6 @@ export const DocContainer = () => {
       <button onClick={loadHighlightsFromCSV}>
         Load Highlights from CSV
       </button>{' '}
-    </>
+    </div>
   );
 };
