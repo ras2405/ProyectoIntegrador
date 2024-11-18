@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import { Box, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { Button, Drawer, Label, Select } from 'flowbite-react';
 
 export const RightPanel = () => {
   const [open, setOpen] = useState(false);
@@ -22,72 +20,41 @@ export const RightPanel = () => {
   return (
     <>
       <Button onClick={() => setOpen(true)}>Open drawer</Button>
-      <Drawer
-        open={open}
-        onClose={() => setOpen(false)}
-        anchor="right"
-        id="drawer"
-      >
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{
-            width: 250,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 3,
-            margin: 4,
-          }}
-        >
-          {/* Select para Etiqueta */}
-          <FormControl fullWidth>
-            <InputLabel id="etiqueta-label">Etiqueta</InputLabel>
+
+      <Drawer open={open} onClose={() => setOpen(false)} position="right">
+        <Drawer.Items>
+          <form
+            onSubmit={handleSubmit}
+            className="flex max-w-md flex-col gap-4"
+          >
+            <Label htmlFor="etiqueta" value="Etiqueta" />
             <Select
-              labelId="etiqueta-label"
-              value={etiqueta}
-              label="Etiqueta"
+              id="etiqueta"
               onChange={(e) => setEtiqueta(e.target.value)}
+              required
             >
               {etiquetas.map((item) => (
-                <MenuItem key={item} value={item}>
-                  {item}
-                </MenuItem>
+                <option key={item}>{item}</option>
               ))}
             </Select>
-            {/* Select para Etapa */}
-            <FormControl
-              fullWidth
-              sx={{
-                mt: 2,
-              }}
+
+            <Label htmlFor="etapa" value="Etapa" />
+            <Select
+              id="etapa"
+              onChange={(e) => setEtapa(e.target.value)}
+              required
             >
-              <InputLabel id="etapa-label">Etapa</InputLabel>
-              <Select
-                labelId="etapa-label"
-                value={etapa}
-                label="Etapa"
-                onChange={(e) => setEtapa(e.target.value)}
-              >
-                {etapas.map((item) => (
-                  <MenuItem key={item} value={item}>
-                    {item}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </FormControl>
-          <Button type="submit" variant="contained" color="primary">
-            Enviar
-          </Button>
-          {/* Botón de Submit */}
-          <Button
-            onClick={() => setOpen(false)}
-            variant="outlined"
-            color="primary"
-          >
-            Cancelar
-          </Button>
-        </Box>
+              {etapas.map((item) => (
+                <option key={item}>{item}</option>
+              ))}
+            </Select>
+
+            <Button type="submit">Enviar</Button>
+            <Button onClick={() => setOpen(false)} outline>
+              Cancelar
+            </Button>
+          </form>
+        </Drawer.Items>
       </Drawer>
     </>
   );
