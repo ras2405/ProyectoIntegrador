@@ -4,17 +4,21 @@ import { Button, Drawer, Label, Select } from 'flowbite-react';
 export const RightPanel = () => {
   const [open, setOpen] = useState(false);
 
-  const [etiqueta, setEtiqueta] = useState('');
-  const [etapa, setEtapa] = useState('');
+  const [tag, setTag] = useState('');
+  const [stage, setStage] = useState('');
 
-  const etiquetas = ['Bug', 'Mejora', 'Tarea', 'Feature'];
-  const etapas = ['To Do', 'In Progress', 'Review', 'Done'];
+  const tags = ['Bug', 'Mejora', 'Tarea', 'Feature'];
+  const stages = ['To Do', 'In Progress', 'Review', 'Done'];
 
+  /**
+   * Handle the form submission.
+   * @param e React.FormEvent<HTMLFormElement>
+   */
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('Etiqueta:', etiqueta);
-    console.log('Etapa:', etapa);
-    alert(`Formulario enviado con: \nEtiqueta: ${etiqueta} \nEtapa: ${etapa}`);
+    console.log('Etiqueta:', tag);
+    console.log('Etapa:', stage);
+    alert(`Formulario enviado con: \nEtiqueta: ${tag} \nEtapa: ${stage}`);
   };
 
   return (
@@ -27,31 +31,27 @@ export const RightPanel = () => {
             onSubmit={handleSubmit}
             className="flex max-w-md flex-col gap-4"
           >
-            <Label htmlFor="etiqueta" value="Etiqueta" />
-            <Select
-              id="etiqueta"
-              onChange={(e) => setEtiqueta(e.target.value)}
-              required
-            >
-              {etiquetas.map((item) => (
+            <Label htmlFor="tag" value="Tag" />
+            <Select id="tag" onChange={(e) => setTag(e.target.value)} required>
+              {tags.map((item) => (
                 <option key={item}>{item}</option>
               ))}
             </Select>
 
-            <Label htmlFor="etapa" value="Etapa" />
+            <Label htmlFor="stage" value="Stage" />
             <Select
-              id="etapa"
-              onChange={(e) => setEtapa(e.target.value)}
+              id="stage"
+              onChange={(e) => setStage(e.target.value)}
               required
             >
-              {etapas.map((item) => (
+              {stages.map((item) => (
                 <option key={item}>{item}</option>
               ))}
             </Select>
 
-            <Button type="submit">Enviar</Button>
+            <Button type="submit">Send</Button>
             <Button onClick={() => setOpen(false)} outline>
-              Cancelar
+              Cancel
             </Button>
           </form>
         </Drawer.Items>

@@ -42,6 +42,10 @@ const text =
 
 // const text = lorem.generateParagraphs(4);
 
+/**
+ * This component allows users to highlight text in a document and download the highlights as CSV files.
+ * @returns
+ */
 export const DocContainer = () => {
   const [highlightedText, setHighlightedText] = useState(text);
   const [textRecords, setTextRecords] = useState<IText[]>([]);
@@ -73,6 +77,9 @@ export const DocContainer = () => {
     }
   };
 
+  /**
+   * Download the text records as a CSV file.
+   */
   const downloadTextRecordsCSV = () => {
     if (textRecords.length > 0) {
       const csv = Papa.unparse(textRecords);
