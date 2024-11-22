@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './App.css';
+import { useState } from 'react';
+import { DocContainer } from './components/DocContainer/DocContainer';
+import { RightPanel } from './components/RightPanel/RightPanel';
+import { ITag, IText } from './Interfaces';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [open, setOpen] = useState(false);
+  const [highlightedText, setHighlightedText] = useState('');
+  const [textRecords, setTextRecords] = useState<IText[]>([]);
+  const [tagRecords, setTagRecords] = useState<ITag[]>([]);
+  const [currentText, setCurrentText] = useState('');
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <DocContainer
+        highlightedText={highlightedText}
+        textRecords={textRecords}
+        tagRecords={tagRecords}
+        setOpen={setOpen}
+        setHighlightedText={setHighlightedText}
+        setTextRecords={setTextRecords}
+        setTagRecords={setTagRecords}
+        setCurrentText={setCurrentText}
+      />
+      <RightPanel
+        open={open}
+        highlightedText={highlightedText}
+        textRecords={textRecords}
+        tagRecords={tagRecords}
+        currentText={currentText}
+        setOpen={setOpen}
+        setHighlightedText={setHighlightedText}
+        setTextRecords={setTextRecords}
+        setTagRecords={setTagRecords}
+      />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
