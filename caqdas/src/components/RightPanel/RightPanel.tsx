@@ -2,6 +2,17 @@ import { useState } from 'react';
 import { Button, Drawer, Label, Select } from 'flowbite-react';
 import { ITag, IText } from '../../Interfaces';
 
+const tags = [
+  {
+    label: 'Tag 1',
+    value: 'tag1',
+  },
+  {
+    label: 'Tag 2',
+    value: 'tag2',
+  },
+];
+
 interface RightPanelProps {
   open: boolean;
   highlightedText: string;
@@ -28,7 +39,6 @@ export const RightPanel = ({
   const [tag, setTag] = useState('');
   const [stage, setStage] = useState('');
 
-  const tags = ['Bug', 'Mejora', 'Tarea', 'Feature'];
   const stages = ['To Do', 'In Progress', 'Review', 'Done'];
 
   const updateHighlightedText = (highlights: IText[]) => {
@@ -62,7 +72,8 @@ export const RightPanel = ({
         projectName: 'My Project',
         timestamp: new Date().toISOString(),
         stage: 'draft',
-        tag: 'default_tag',
+        tag1: tag === 'tag1' ? 1 : 0,
+        tag2: tag === 'tag2' ? 1 : 0,
       };
 
       const newTagRecord: ITag = {
@@ -89,7 +100,9 @@ export const RightPanel = ({
             <Label htmlFor="tag" value="Tag" />
             <Select id="tag" onChange={(e) => setTag(e.target.value)} required>
               {tags.map((item) => (
-                <option key={item}>{item}</option>
+                <option key={item.value} value={item.value}>
+                  {item.label}
+                </option>
               ))}
             </Select>
 
