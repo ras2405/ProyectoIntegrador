@@ -1,7 +1,4 @@
 import { useEffect } from 'react';
-import { saveAs } from 'file-saver';
-import * as Papa from 'papaparse';
-import { ITag, IText } from '../../Interfaces';
 
 const text =
   'In a quiet village surrounded by mountains and lush forests, ' +
@@ -30,7 +27,6 @@ const text =
 
 interface DocContainerProps {
   highlightedText: string;
-  textRecords: IText[];
   setOpen: (open: boolean) => void;
   setHighlightedText: (highlightedText: string) => void;
   setCurrentText: (currentText: string) => void;
@@ -42,7 +38,6 @@ interface DocContainerProps {
  */
 export const DocContainer = ({
   highlightedText,
-  textRecords,
   setOpen,
   setHighlightedText,
   setCurrentText,
@@ -54,67 +49,18 @@ export const DocContainer = ({
     setOpen(true);
   };
 
-  /**
-   * Download the text records as a CSV file.
-   */
-  const downloadTextRecordsCSV = () => {
-    if (textRecords.length > 0) {
-      const csv = Papa.unparse(textRecords);
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      saveAs(blob, 'highlights.csv');
-    }
-  };
-
-  // const loadHighlightsFromCSV = async () => {
-  //   try {
-  //     const response = await fetch('/highlights.csv'); // Asegúrate de que el archivo esté en la carpeta public
-  //     const text = await response.text();
-  //     Papa.parse(text, {
-  //       header: true,
-  //       dynamicTyping: true,
-  //       complete: (results) => {
-  //         // Supongamos que cada registro en el CSV tiene un campo 'text' que queremos utilizar
-  //         const newHighlights = results.data.map((row: any) => ({
-  //           text: row.text,
-  //           type: 'highlighted',
-  //           user: 'current_user',
-  //           projectName: 'My Project',
-  //           timestamp: new Date().toISOString(),
-  //           stage: 'draft',
-  //           tag: row.tag || 'default_tag',
-  //         }));
-  //         setTextRecords(newHighlights);
-  //         // Aquí podrías actualizar el estado de tagRecords si también hay tags en el CSV
-  //         const newTagRecords = newHighlights.map((record) => ({
-  //           tag: record.tag,
-  //         }));
-  //         setTagRecords(newTagRecords);
-  //         updateHighlightedText(newHighlights);
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.error('Error loading highlights:', error);
-  //   }
-  // };
-
   useEffect(() => {
     setHighlightedText(text);
   }, []);
 
   return (
-    <div>
+    <div className="doc">
       <div
         onMouseUp={handleMouseUp}
         dangerouslySetInnerHTML={{
           __html: highlightedText.replace(/\n/g, '<br/>'),
         }}
       />
-      <button onClick={downloadTextRecordsCSV}>
-        Download Text Records CSV
-      </button>
-      {/* <button onClick={loadHighlightsFromCSV}>
-        Load Highlights from CSV
-      </button>{' '} */}
     </div>
   );
 };
