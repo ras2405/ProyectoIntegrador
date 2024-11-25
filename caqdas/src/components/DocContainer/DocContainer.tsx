@@ -49,38 +49,6 @@ export const DocContainer = ({
     setOpen(true);
   };
 
-  // const loadHighlightsFromCSV = async () => {
-  //   try {
-  //     const response = await fetch('/highlights.csv'); // Asegúrate de que el archivo esté en la carpeta public
-  //     const text = await response.text();
-  //     Papa.parse(text, {
-  //       header: true,
-  //       dynamicTyping: true,
-  //       complete: (results) => {
-  //         // Supongamos que cada registro en el CSV tiene un campo 'text' que queremos utilizar
-  //         const newHighlights = results.data.map((row: any) => ({
-  //           text: row.text,
-  //           type: 'highlighted',
-  //           user: 'current_user',
-  //           projectName: 'My Project',
-  //           timestamp: new Date().toISOString(),
-  //           stage: 'draft',
-  //           tag: row.tag || 'default_tag',
-  //         }));
-  //         setTextRecords(newHighlights);
-  //         // Aquí podrías actualizar el estado de tagRecords si también hay tags en el CSV
-  //         const newTagRecords = newHighlights.map((record) => ({
-  //           tag: record.tag,
-  //         }));
-  //         setTagRecords(newTagRecords);
-  //         updateHighlightedText(newHighlights);
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.error('Error loading highlights:', error);
-  //   }
-  // };
-
   useEffect(() => {
     setHighlightedText(text);
   }, []);
@@ -93,9 +61,6 @@ export const DocContainer = ({
           __html: highlightedText.replace(/\n/g, '<br/>'),
         }}
       />
-      {/* <button onClick={loadHighlightsFromCSV}>
-        Load Highlights from CSV
-      </button>{' '} */}
     </div>
   );
 };
