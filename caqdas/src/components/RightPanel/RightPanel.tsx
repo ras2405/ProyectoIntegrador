@@ -4,12 +4,54 @@ import { ITag, IText } from '../../Interfaces';
 
 const tags = [
   {
-    label: 'Tag 1',
-    value: 'tag1',
+    label: 'Adventure',
+    value: 'tagAdventure',
+    color: '#1E40AF', // Azul
   },
   {
-    label: 'Tag 2',
-    value: 'tag2',
+    label: 'Nature',
+    value: 'tagNature',
+    color: '#10B981', // Verde
+  },
+  {
+    label: 'Mystery',
+    value: 'tagMystery',
+    color: '#6B21A8', // Púrpura
+  },
+  {
+    label: 'Fantasy',
+    value: 'tagFantasy',
+    color: '#EC4899', // Rosa
+  },
+  {
+    label: 'Forest',
+    value: 'tagForest',
+    color: '#14B8A6', // Verde azulado
+  },
+  {
+    label: 'Journey',
+    value: 'tagJourney',
+    color: '#F59E0B', // Amarillo
+  },
+  {
+    label: 'Discovery',
+    value: 'tagDiscovery',
+    color: '#FB923C', // Naranja
+  },
+  {
+    label: 'Magic',
+    value: 'tagMagic',
+    color: '#6366F1', // Índigo
+  },
+  {
+    label: 'Legends',
+    value: 'tagLegends',
+    color: '#EF4444', // Rojo
+  },
+  {
+    label: 'Wisdom',
+    value: 'tagWisdom',
+    color: '#6B7280', // Gris
   },
 ];
 
@@ -26,24 +68,20 @@ interface RightPanelProps {
   open: boolean;
   highlightedText: string;
   textRecords: IText[];
-  tagRecords: ITag[];
   currentText: string;
   setOpen: (open: boolean) => void;
   setHighlightedText: (highlightedText: string) => void;
   setTextRecords: (textRecords: IText[]) => void;
-  setTagRecords: (tagRecords: ITag[]) => void;
 }
 
 export const RightPanel = ({
   highlightedText,
   textRecords,
-  tagRecords,
   open,
   currentText,
   setOpen,
   setHighlightedText,
   setTextRecords,
-  setTagRecords,
 }: RightPanelProps) => {
   const [tag, setTag] = useState<string>(tags[0].value);
   const [stage, setStage] = useState('');
@@ -54,15 +92,17 @@ export const RightPanel = ({
     let updatedText = highlightedText;
 
     highlights.forEach((highlight) => {
-      const matchingLabels = Object.entries(highlight)
+      const matchingTags = Object.entries(highlight)
         .filter(([key, value]) => key.startsWith('tag') && value === 1)
         .map(([key]) => {
           const tag = tags.find((t) => t.value === key);
-          return tag?.label;
+          return tag;
         })
-        .filter((label) => label);
+        .filter((tag) => tag);
 
-      const labelText = matchingLabels.join(', ');
+      const labelText = matchingTags.map((tag) => tag?.label).join(', ');
+      const tagColor =
+        matchingTags.length > 0 ? matchingTags[0]?.color : '#FFFFFF';
 
       const escapedText = highlight.text.replace(
         /[-\/\\^$.*+?()[\]{}|~]/g,
@@ -70,7 +110,7 @@ export const RightPanel = ({
       );
       updatedText = updatedText.replace(
         new RegExp(escapedText, 'g'),
-        `<span class="highlight">${highlight.text}<span class="tooltip">${labelText}<br>${formatDate(highlight.timestamp)}</span></span>`
+        `<span class="highlight" style="background-color: ${tagColor};">${highlight.text}<span class="tooltip">${labelText}<br>${formatDate(highlight.timestamp)}</span></span>`
       );
     });
 
@@ -91,18 +131,20 @@ export const RightPanel = ({
         projectName: 'My Project',
         timestamp: new Date().toISOString(),
         stage: 'draft',
-        tag1: tag === 'tag1' ? 1 : 0,
-        tag2: tag === 'tag2' ? 1 : 0,
-      };
-
-      const newTagRecord: ITag = {
-        tag: 'default_tag',
-        // color: "yellow"
+        tagAdventure: tag === 'tagAdventure' ? 1 : 0,
+        tagNature: tag === 'tagNature' ? 1 : 0,
+        tagMystery: tag === 'tagMystery' ? 1 : 0,
+        tagFantasy: tag === 'tagFantasy' ? 1 : 0,
+        tagForest: tag === 'tagForest' ? 1 : 0,
+        tagJourney: tag === 'tagJourney' ? 1 : 0,
+        tagDiscovery: tag === 'tagDiscovery' ? 1 : 0,
+        tagMagic: tag === 'tagMagic' ? 1 : 0,
+        tagLegends: tag === 'tagLegends' ? 1 : 0,
+        tagWisdom: tag === 'tagWisdom' ? 1 : 0,
       };
 
       setTextRecords([...textRecords, newTextRecord]);
-      setTagRecords([...tagRecords, newTagRecord]);
-      updateHighlightedText([...textRecords, newTextRecord]); // Actualiza con todos los resaltados
+      updateHighlightedText([...textRecords, newTextRecord]);
       setOpen(false);
     }
   };
