@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Drawer, Label, Select } from 'flowbite-react';
+import { Button, Drawer, Label, Select, Tabs } from 'flowbite-react';
 import { ITag, IText } from '../../Interfaces';
 
 const tags = [
@@ -93,35 +93,53 @@ export const RightPanel = ({
 
       <Drawer open={open} onClose={() => setOpen(false)} position="right">
         <Drawer.Items>
-          <form
-            onSubmit={handleSubmit}
-            className="flex max-w-md flex-col gap-4"
-          >
-            <Label htmlFor="tag" value="Tag" />
-            <Select id="tag" onChange={(e) => setTag(e.target.value)} required>
-              {tags.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </Select>
+          <Tabs aria-label="Pills" variant="pills">
+            {/* Tab 1: Formulario */}
+            <Tabs.Item active title="Tag Options">
+              <form
+                onSubmit={handleSubmit}
+                className="flex max-w-md flex-col gap-4"
+              >
+                <Label htmlFor="tag" value="Tag" />
+                <Select
+                  id="tag"
+                  onChange={(e) => setTag(e.target.value)}
+                  required
+                >
+                  {tags.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
+                </Select>
 
-            <Label htmlFor="stage" value="Stage" />
-            <Select
-              id="stage"
-              onChange={(e) => setStage(e.target.value)}
-              required
-            >
-              {stages.map((item) => (
-                <option key={item}>{item}</option>
-              ))}
-            </Select>
+                <Label htmlFor="stage" value="Stage" />
+                <Select
+                  id="stage"
+                  onChange={(e) => setStage(e.target.value)}
+                  required
+                >
+                  {stages.map((item) => (
+                    <option key={item}>{item}</option>
+                  ))}
+                </Select>
 
-            <Button type="submit">Send</Button>
-            <Button onClick={() => setOpen(false)} outline>
-              Cancel
-            </Button>
-          </form>
+                <div className="flex justify-between gap-4">
+                  <Button type="submit">Send</Button>
+                  <Button onClick={() => setOpen(false)} outline>
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </Tabs.Item>
+
+            {/* Tab 2: Historial */}
+            <Tabs.Item title="Tag History">
+              <div className="p-4 text-gray-500">
+                <p>Hola</p>
+              </div>
+            </Tabs.Item>
+          </Tabs>
         </Drawer.Items>
       </Drawer>
     </>
