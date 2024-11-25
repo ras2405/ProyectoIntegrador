@@ -6,6 +6,7 @@
 
 .highlight {
   position: relative;
+  border-radius: 4px;
 }
 
 .highlight:hover .tooltip {
