@@ -50,15 +50,21 @@ export const RightPanel = ({
           (tagCol) => currentRecord[tagCol as keyof IText] === 1
         ) || tags[0].value;
       setTag(selectedTag);
-      setStage(currentRecord.stage || 'To Do');
+      setStage(currentRecord.stage || 'Problem Statement');
     } else {
       setSelectedRecord(null);
       setTag(tags[0].value); // Valores predeterminados si no hay registro
-      setStage('To Do');
+      setStage('Problem Statement');
     }
   }, [currentText, textRecords]);
 
-  const stages = ['To Do', 'In Progress', 'Review', 'Done'];
+  const stages = [
+    'Problem Statement',
+    'Data Acquisition',
+    'Data Management',
+    'Data Analysis',
+    'Report',
+  ];
 
   const getDisplayTag = (tagKey: string) => {
     const displayMap: { [key: string]: string } = {
@@ -135,7 +141,7 @@ export const RightPanel = ({
           const changeEntry: IChangeHistory = {
             recordId: selectedRecord.text,
             timestamp: new Date().toISOString(),
-            oldStage: selectedRecord.stage || 'To Do',
+            oldStage: selectedRecord.stage || 'Problem Statement',
             newStage: stage,
             oldTag: oldTag,
             newTag: newTag,
