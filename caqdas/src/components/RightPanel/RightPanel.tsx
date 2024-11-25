@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Drawer, Label, Select, Tabs } from 'flowbite-react';
 import { IText, IChangeHistory } from '../../Interfaces';
 import { tags } from '../../constants/tags';
+import { stages } from '../../constants/stages';
 
 interface RightPanelProps {
   open: boolean;
@@ -50,21 +51,13 @@ export const RightPanel = ({
           (tagCol) => currentRecord[tagCol as keyof IText] === 1
         ) || tags[0].value;
       setTag(selectedTag);
-      setStage(currentRecord.stage || 'Problem Statement');
+      setStage(currentRecord.stage || stages[0].value);
     } else {
       setSelectedRecord(null);
       setTag(tags[0].value); // Valores predeterminados si no hay registro
-      setStage('Problem Statement');
+      setStage(stages[0].value);
     }
   }, [currentText, textRecords]);
-
-  const stages = [
-    'Problem Statement',
-    'Data Acquisition',
-    'Data Management',
-    'Data Analysis',
-    'Report',
-  ];
 
   const getDisplayTag = (tagKey: string) => {
     const displayMap: { [key: string]: string } = {
@@ -141,7 +134,7 @@ export const RightPanel = ({
           const changeEntry: IChangeHistory = {
             recordId: selectedRecord.text,
             timestamp: new Date().toISOString(),
-            oldStage: selectedRecord.stage || 'Problem Statement',
+            oldStage: selectedRecord.stage || stages[0].value,
             newStage: stage,
             oldTag: oldTag,
             newTag: newTag,
@@ -197,7 +190,9 @@ export const RightPanel = ({
                   required
                 >
                   {stages.map((item) => (
-                    <option key={item}>{item}</option>
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
                   ))}
                 </Select>
 
