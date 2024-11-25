@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { IText } from '../../Interfaces';
 
 const text =
   'In a quiet village surrounded by mountains and lush forests, ' +
@@ -30,6 +31,7 @@ interface DocContainerProps {
   setOpen: (open: boolean) => void;
   setHighlightedText: (highlightedText: string) => void;
   setCurrentText: (currentText: string) => void;
+  textRecords: IText[];
 }
 
 /**
@@ -41,6 +43,7 @@ export const DocContainer = ({
   setOpen,
   setHighlightedText,
   setCurrentText,
+  textRecords,
 }: DocContainerProps) => {
   const handleMouseUp = () => {
     const selection = window.getSelection();

@@ -3,17 +3,6 @@ import { Button, Drawer, Label, Select, Tabs } from 'flowbite-react';
 import { IText, IChangeHistory } from '../../Interfaces';
 import { tags } from '../../constants/tags';
 
-const tags = [
-  {
-    label: 'Tag 1',
-    value: 'tag1',
-  },
-  {
-    label: 'Tag 2',
-    value: 'tag2',
-  },
-];
-
 interface RightPanelProps {
   open: boolean;
   textRecords: IText[];
@@ -21,7 +10,6 @@ interface RightPanelProps {
   setOpen: (open: boolean) => void;
   updateHighlightedText: (highlights: IText[]) => void;
   setTextRecords: React.Dispatch<React.SetStateAction<IText[]>>;
-  setTagRecords: (tagRecords: ITag[]) => void;
 }
 
 export const RightPanel = ({
@@ -43,39 +31,49 @@ export const RightPanel = ({
     );
     if (currentRecord) {
       setSelectedRecord(currentRecord);
-      // Determine tag based on tag1 and tag2 columns
-      const selectedTag = currentRecord.tag1
-        ? 'tag1'
-        : currentRecord.tag2
-          ? 'tag2'
-          : '';
+
+      const tagColumns = [
+        'tagAdventure',
+        'tagNature',
+        'tagMystery',
+        'tagFantasy',
+        'tagForest',
+        'tagJourney',
+        'tagDiscovery',
+        'tagMagic',
+        'tagLegends',
+        'tagWisdom',
+      ];
+
+      const selectedTag =
+        tagColumns.find(
+          (tagCol) => currentRecord[tagCol as keyof IText] === 1
+        ) || tags[0].value;
       setTag(selectedTag);
       setStage(currentRecord.stage || 'To Do');
     } else {
       setSelectedRecord(null);
-      setTag(''); // Valores predeterminados si no hay registro
+      setTag(tags[0].value); // Valores predeterminados si no hay registro
       setStage('To Do');
     }
   }, [currentText, textRecords]);
 
   const stages = ['To Do', 'In Progress', 'Review', 'Done'];
 
-  const updateHighlightedText = (highlights: IText[]) => {
-    let updatedText = highlightedText;
-
-    highlights.forEach((highlight, index) => {
-      const escapedText = highlight.text.replace(
-        /[-\/\\^$.*+?()[\]{}|~]/g,
-        '\\$&'
-      ); // Escapar caracteres especiales
-      updatedText = updatedText.replace(
-        new RegExp(escapedText, 'g'),
-        `<span class="highlight" data-id="${index}" style="background-color: red; cursor: pointer;">${highlight.text}</span>`
-      );
-    });
-
-    setHighlightedText(updatedText);
-    console.log('Texto actualizado con spans:', highlightedText);
+  const getDisplayTag = (tagKey: string) => {
+    const displayMap: { [key: string]: string } = {
+      tagAdventure: 'Adventure',
+      tagNature: 'Nature',
+      tagMystery: 'Mystery',
+      tagFantasy: 'Fantasy',
+      tagForest: 'Forest',
+      tagJourney: 'Journey',
+      tagDiscovery: 'Discovery',
+      tagMagic: 'Magic',
+      tagLegends: 'Legends',
+      tagWisdom: 'Wisdom',
+    };
+    return displayMap[tagKey] || tagKey;
   };
 
   /**
@@ -85,6 +83,21 @@ export const RightPanel = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (currentText) {
+      const tagColumns = {
+        tagAdventure: 0,
+        tagNature: 0,
+        tagMystery: 0,
+        tagFantasy: 0,
+        tagForest: 0,
+        tagJourney: 0,
+        tagDiscovery: 0,
+        tagMagic: 0,
+        tagLegends: 0,
+        tagWisdom: 0,
+      };
+
+      tagColumns[tag as keyof typeof tagColumns] = 1;
+
       const newTextRecord: IText = {
         text: currentText,
         type: 'highlighted',
@@ -92,25 +105,27 @@ export const RightPanel = ({
         projectName: 'My Project',
         timestamp: new Date().toISOString(),
         stage: stage,
-        tagAdventure: tag === 'tagAdventure' ? 1 : 0,
-        tagNature: tag === 'tagNature' ? 1 : 0,
-        tagMystery: tag === 'tagMystery' ? 1 : 0,
-        tagFantasy: tag === 'tagFantasy' ? 1 : 0,
-        tagForest: tag === 'tagForest' ? 1 : 0,
-        tagJourney: tag === 'tagJourney' ? 1 : 0,
-        tagDiscovery: tag === 'tagDiscovery' ? 1 : 0,
-        tagMagic: tag === 'tagMagic' ? 1 : 0,
-        tagLegends: tag === 'tagLegends' ? 1 : 0,
-        tagWisdom: tag === 'tagWisdom' ? 1 : 0,
+        ...tagColumns,
       };
-        
+
       if (selectedRecord) {
-        // Create change history entry
-        const oldTag = selectedRecord.tag1
-          ? 'tag1'
-          : selectedRecord.tag2
-            ? 'tag2'
-            : 'No Tag';
+        const tagColumns = [
+          'tagAdventure',
+          'tagNature',
+          'tagMystery',
+          'tagFantasy',
+          'tagForest',
+          'tagJourney',
+          'tagDiscovery',
+          'tagMagic',
+          'tagLegends',
+          'tagWisdom',
+        ];
+
+        const oldTag =
+          tagColumns.find(
+            (tagCol) => selectedRecord[tagCol as keyof IText] === 1
+          ) || tags[0].value;
         const newTag = tag || oldTag;
 
         const stageChanged = selectedRecord.stage !== stage;
@@ -190,7 +205,7 @@ export const RightPanel = ({
             </Tabs.Item>
 
             {/* Tab 2: Historial */}
-            <Tabs.Item title="Tag History">
+            <Tabs.Item title="All Tags History">
               <div className="p-4 text-gray-500">
                 {changeHistory.map((change, index) => (
                   <div key={index} className="mb-2 p-2 border-b">
@@ -200,7 +215,8 @@ export const RightPanel = ({
                       Stage: {change.oldStage} → {change.newStage}
                     </p>
                     <p>
-                      Tag: {change.oldTag} → {change.newTag}
+                      Tag: {getDisplayTag(change.oldTag)} →{' '}
+                      {getDisplayTag(change.newTag)}
                     </p>
                     <p>User: {change.user}</p>
                   </div>
