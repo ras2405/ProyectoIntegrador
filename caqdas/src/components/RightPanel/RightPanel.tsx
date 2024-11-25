@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Drawer, Label, Select, Tabs } from 'flowbite-react';
-import { ITag, IText } from '../../Interfaces';
+import { ITag, IText, IChangeHistory } from '../../Interfaces';
 
 const tags = [
   {
@@ -39,6 +39,7 @@ export const RightPanel = ({
   const [tag, setTag] = useState('');
   const [stage, setStage] = useState('');
   const [selectedRecord, setSelectedRecord] = useState<IText | null>(null);
+  const [changeHistory, setChangeHistory] = useState<IChangeHistory[]>([]);
 
   useEffect(() => {
     const currentRecord = textRecords.find(
@@ -104,6 +105,34 @@ export const RightPanel = ({
       //   // color: "yellow"
       // };
 
+      if (selectedRecord) {
+        // Create change history entry
+        const oldTag = selectedRecord.tag1
+          ? 'tag1'
+          : selectedRecord.tag2
+            ? 'tag2'
+            : 'No Tag';
+        const newTag = tag || oldTag;
+
+        const stageChanged = selectedRecord.stage !== stage;
+        const tagChanged = oldTag !== newTag;
+
+        if (stageChanged || tagChanged) {
+          const changeEntry: IChangeHistory = {
+            recordId: selectedRecord.text,
+            timestamp: new Date().toISOString(),
+            oldStage: selectedRecord.stage || 'To Do',
+            newStage: stage,
+            oldTag: oldTag,
+            newTag: newTag,
+            user: 'current_user',
+          };
+
+          // Update change history
+          setChangeHistory((prev) => [...prev, changeEntry]);
+        }
+      }
+
       // setTagRecords([...tagRecords, newTagRecord]);
       setTextRecords((prev) =>
         prev.some((record) => record.text === currentText)
@@ -115,7 +144,7 @@ export const RightPanel = ({
       updateHighlightedText([...textRecords, newTextRecord]);
       setOpen(false);
     }
-    setOpen(false);
+    // setOpen(false);
   };
 
   return (
@@ -169,7 +198,19 @@ export const RightPanel = ({
             {/* Tab 2: Historial */}
             <Tabs.Item title="Tag History">
               <div className="p-4 text-gray-500">
-                <p>Hola</p>
+                {changeHistory.map((change, index) => (
+                  <div key={index} className="mb-2 p-2 border-b">
+                    <p>Record: "{change.recordId}"</p>
+                    <p>Time: {new Date(change.timestamp).toLocaleString()}</p>
+                    <p>
+                      Stage: {change.oldStage} → {change.newStage}
+                    </p>
+                    <p>
+                      Tag: {change.oldTag} → {change.newTag}
+                    </p>
+                    <p>User: {change.user}</p>
+                  </div>
+                ))}
               </div>
             </Tabs.Item>
           </Tabs>

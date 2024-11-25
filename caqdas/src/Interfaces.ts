@@ -9,6 +9,16 @@ export interface IText {
   tag2: number;
 }
 
+export interface IChangeHistory {
+  recordId: string;  // highlight id
+  timestamp: string;
+  oldStage: string;
+  newStage: string;
+  oldTag: string;
+  newTag: string;
+  user: string;
+}
+
 export interface ITag {
   tag: string;
   // color: string;
