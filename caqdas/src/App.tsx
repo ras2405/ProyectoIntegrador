@@ -16,23 +16,18 @@ function App() {
       <DocContainer
         highlightedText={highlightedText}
         textRecords={textRecords}
-        tagRecords={tagRecords}
         setOpen={setOpen}
         setHighlightedText={setHighlightedText}
-        setTextRecords={setTextRecords}
-        setTagRecords={setTagRecords}
         setCurrentText={setCurrentText}
       />
       <RightPanel
         open={open}
         highlightedText={highlightedText}
         textRecords={textRecords}
-        tagRecords={tagRecords}
         currentText={currentText}
         setOpen={setOpen}
         setHighlightedText={setHighlightedText}
         setTextRecords={setTextRecords}
-        setTagRecords={setTagRecords}
       />
     </>
   );
