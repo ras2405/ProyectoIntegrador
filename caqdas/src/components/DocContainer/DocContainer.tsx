@@ -44,19 +44,41 @@ export const DocContainer = ({
 }: DocContainerProps) => {
   const handleMouseUp = () => {
     const selection = window.getSelection();
-    const selectedText = selection ? selection.toString() : '';
-    setCurrentText(selectedText);
-    setOpen(true);
+    const selectedText = selection ? selection.toString().trim() : '';
+    if (selectedText) {
+      setCurrentText(selectedText); // Almacenar el texto seleccionado
+      setOpen(true); // Abrir el panel derecho
+    }
   };
 
   useEffect(() => {
     setHighlightedText(text);
   }, []);
 
+  const handleTextClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    console.log('Click detected:', target);
+    console.log('Clases del elemento:', target.classList);
+
+    if (target.classList.contains('highlight')) {
+      console.log('Subrayado clicado:', target);
+      const id = target.getAttribute('data-id');
+      if (id !== null) {
+        const record = textRecords[parseInt(id)];
+        if (record) {
+          setCurrentText(record.text); // Prellenar con el texto actual
+          setOpen(true); // Abrir el panel
+          return;
+        }
+      }
+    }
+  };
+
   return (
     <div className="doc">
       <div
         onMouseUp={handleMouseUp}
+        onClick={handleTextClick}
         dangerouslySetInnerHTML={{
           __html: highlightedText.replace(/\n/g, '<br/>'),
         }}
