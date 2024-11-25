@@ -5,8 +5,16 @@ export interface IText {
   projectName: string;
   timestamp: string;
   stage: string;
-  tag1: number;
-  tag2: number;
+  tagAdventure: number;
+  tagNature: number;
+  tagMystery: number;
+  tagFantasy: number;
+  tagForest: number;
+  tagJourney: number;
+  tagDiscovery: number;
+  tagMagic: number;
+  tagLegends: number;
+  tagWisdom: number;
 }
 
 export interface IChangeHistory {

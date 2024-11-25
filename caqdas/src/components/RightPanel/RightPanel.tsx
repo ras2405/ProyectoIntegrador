@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Drawer, Label, Select, Tabs } from 'flowbite-react';
-import { ITag, IText, IChangeHistory } from '../../Interfaces';
+import { IText, IChangeHistory } from '../../Interfaces';
+import { tags } from '../../constants/tags';
 
 const tags = [
   {
@@ -15,28 +16,23 @@ const tags = [
 
 interface RightPanelProps {
   open: boolean;
-  highlightedText: string;
   textRecords: IText[];
-  tagRecords: ITag[];
   currentText: string;
   setOpen: (open: boolean) => void;
-  setHighlightedText: (highlightedText: string) => void;
+  updateHighlightedText: (highlights: IText[]) => void;
   setTextRecords: React.Dispatch<React.SetStateAction<IText[]>>;
   setTagRecords: (tagRecords: ITag[]) => void;
 }
 
 export const RightPanel = ({
-  highlightedText,
   textRecords,
-  tagRecords,
   open,
   currentText,
   setOpen,
-  setHighlightedText,
   setTextRecords,
-  setTagRecords,
+  updateHighlightedText,
 }: RightPanelProps) => {
-  const [tag, setTag] = useState('');
+  const [tag, setTag] = useState<string>(tags[0].value);
   const [stage, setStage] = useState('');
   const [selectedRecord, setSelectedRecord] = useState<IText | null>(null);
   const [changeHistory, setChangeHistory] = useState<IChangeHistory[]>([]);
@@ -96,15 +92,18 @@ export const RightPanel = ({
         projectName: 'My Project',
         timestamp: new Date().toISOString(),
         stage: stage,
-        tag1: tag === 'tag1' ? 1 : 0,
-        tag2: tag === 'tag2' ? 1 : 0,
+        tagAdventure: tag === 'tagAdventure' ? 1 : 0,
+        tagNature: tag === 'tagNature' ? 1 : 0,
+        tagMystery: tag === 'tagMystery' ? 1 : 0,
+        tagFantasy: tag === 'tagFantasy' ? 1 : 0,
+        tagForest: tag === 'tagForest' ? 1 : 0,
+        tagJourney: tag === 'tagJourney' ? 1 : 0,
+        tagDiscovery: tag === 'tagDiscovery' ? 1 : 0,
+        tagMagic: tag === 'tagMagic' ? 1 : 0,
+        tagLegends: tag === 'tagLegends' ? 1 : 0,
+        tagWisdom: tag === 'tagWisdom' ? 1 : 0,
       };
-
-      // const newTagRecord: ITag = {
-      //   tag: 'default_tag',
-      //   // color: "yellow"
-      // };
-
+        
       if (selectedRecord) {
         // Create change history entry
         const oldTag = selectedRecord.tag1
@@ -127,13 +126,10 @@ export const RightPanel = ({
             newTag: newTag,
             user: 'current_user',
           };
-
-          // Update change history
           setChangeHistory((prev) => [...prev, changeEntry]);
         }
       }
 
-      // setTagRecords([...tagRecords, newTagRecord]);
       setTextRecords((prev) =>
         prev.some((record) => record.text === currentText)
           ? prev.map((record) =>
@@ -141,16 +137,14 @@ export const RightPanel = ({
             )
           : [...prev, newTextRecord]
       );
+
       updateHighlightedText([...textRecords, newTextRecord]);
       setOpen(false);
     }
-    // setOpen(false);
   };
 
   return (
     <>
-      {/* <Button onClick={() => setOpen(true)}>Open drawer</Button> */}
-
       <Drawer open={open} onClose={() => setOpen(false)} position="right">
         <Drawer.Items>
           <Tabs aria-label="Pills" variant="pills">
