@@ -24,7 +24,7 @@ function App() {
   const updateHighlightedText = (highlights: IText[]) => {
     let updatedText = highlightedText;
 
-    highlights.forEach((highlight) => {
+    highlights.forEach((highlight, index) => {
       const matchingTags = Object.entries(highlight)
         .filter(([key, value]) => key.startsWith('tag') && value === 1)
         .map(([key]) => {
@@ -43,7 +43,7 @@ function App() {
       );
       updatedText = updatedText.replace(
         new RegExp(escapedText, 'g'),
-        `<span class="highlight" style="background-color: ${tagColor};">${highlight.text}<span class="tooltip">${labelText}<br>${formatDate(highlight.timestamp)}</span></span>`
+        `<span class="highlight" data-id="${index}" style="background-color: ${tagColor}; cursor: pointer;">${highlight.text}<span class="tooltip">${labelText}<br>${formatDate(highlight.timestamp)}</span></span>`
       );
     });
 
@@ -62,6 +62,7 @@ function App() {
         setOpen={setOpen}
         setHighlightedText={setHighlightedText}
         setCurrentText={setCurrentText}
+        textRecords={textRecords}
       />
       <RightPanel
         open={open}
