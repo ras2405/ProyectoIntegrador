@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Drawer, Label, Select, Tabs } from 'flowbite-react';
 import { ITag, IText } from '../../Interfaces';
 
@@ -21,7 +21,7 @@ interface RightPanelProps {
   currentText: string;
   setOpen: (open: boolean) => void;
   setHighlightedText: (highlightedText: string) => void;
-  setTextRecords: (textRecords: IText[]) => void;
+  setTextRecords: React.Dispatch<React.SetStateAction<IText[]>>;
   setTagRecords: (tagRecords: ITag[]) => void;
 }
 
@@ -38,24 +38,47 @@ export const RightPanel = ({
 }: RightPanelProps) => {
   const [tag, setTag] = useState('');
   const [stage, setStage] = useState('');
+  const [selectedRecord, setSelectedRecord] = useState<IText | null>(null);
+
+  useEffect(() => {
+    const currentRecord = textRecords.find(
+      (record) => record.text === currentText
+    );
+    if (currentRecord) {
+      setSelectedRecord(currentRecord);
+      // Determine tag based on tag1 and tag2 columns
+      const selectedTag = currentRecord.tag1
+        ? 'tag1'
+        : currentRecord.tag2
+          ? 'tag2'
+          : '';
+      setTag(selectedTag);
+      setStage(currentRecord.stage || 'To Do');
+    } else {
+      setSelectedRecord(null);
+      setTag(''); // Valores predeterminados si no hay registro
+      setStage('To Do');
+    }
+  }, [currentText, textRecords]);
 
   const stages = ['To Do', 'In Progress', 'Review', 'Done'];
 
   const updateHighlightedText = (highlights: IText[]) => {
     let updatedText = highlightedText;
 
-    highlights.forEach((highlight) => {
+    highlights.forEach((highlight, index) => {
       const escapedText = highlight.text.replace(
         /[-\/\\^$.*+?()[\]{}|~]/g,
         '\\$&'
       ); // Escapar caracteres especiales
       updatedText = updatedText.replace(
         new RegExp(escapedText, 'g'),
-        `<span class="highlight">${highlight.text}</span>`
+        `<span class="highlight" data-id="${index}" style="background-color: red; cursor: pointer;">${highlight.text}</span>`
       );
     });
 
     setHighlightedText(updatedText);
+    console.log('Texto actualizado con spans:', highlightedText);
   };
 
   /**
@@ -71,20 +94,28 @@ export const RightPanel = ({
         user: 'current_user',
         projectName: 'My Project',
         timestamp: new Date().toISOString(),
-        stage: 'draft',
+        stage: stage,
         tag1: tag === 'tag1' ? 1 : 0,
         tag2: tag === 'tag2' ? 1 : 0,
       };
 
-      const newTagRecord: ITag = {
-        tag: 'default_tag',
-        // color: "yellow"
-      };
+      // const newTagRecord: ITag = {
+      //   tag: 'default_tag',
+      //   // color: "yellow"
+      // };
 
-      setTextRecords([...textRecords, newTextRecord]);
-      setTagRecords([...tagRecords, newTagRecord]);
-      updateHighlightedText([...textRecords, newTextRecord]); // Actualiza con todos los resaltados
+      // setTagRecords([...tagRecords, newTagRecord]);
+      setTextRecords((prev) =>
+        prev.some((record) => record.text === currentText)
+          ? prev.map((record) =>
+              record.text === currentText ? newTextRecord : record
+            )
+          : [...prev, newTextRecord]
+      );
+      updateHighlightedText([...textRecords, newTextRecord]);
+      setOpen(false);
     }
+    setOpen(false);
   };
 
   return (
@@ -103,6 +134,7 @@ export const RightPanel = ({
                 <Label htmlFor="tag" value="Tag" />
                 <Select
                   id="tag"
+                  value={tag}
                   onChange={(e) => setTag(e.target.value)}
                   required
                 >
@@ -116,6 +148,7 @@ export const RightPanel = ({
                 <Label htmlFor="stage" value="Stage" />
                 <Select
                   id="stage"
+                  value={stage}
                   onChange={(e) => setStage(e.target.value)}
                   required
                 >
