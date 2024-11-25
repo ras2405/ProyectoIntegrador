@@ -13,6 +13,15 @@ const tags = [
   },
 ];
 
+const formatDate = (isoString: string): string => {
+  const date = new Date(isoString);
+  return new Intl.DateTimeFormat('es-ES', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+};
+
 interface RightPanelProps {
   open: boolean;
   highlightedText: string;
@@ -36,7 +45,7 @@ export const RightPanel = ({
   setTextRecords,
   setTagRecords,
 }: RightPanelProps) => {
-  const [tag, setTag] = useState('');
+  const [tag, setTag] = useState<string>(tags[0].value);
   const [stage, setStage] = useState('');
 
   const stages = ['To Do', 'In Progress', 'Review', 'Done'];
@@ -45,13 +54,23 @@ export const RightPanel = ({
     let updatedText = highlightedText;
 
     highlights.forEach((highlight) => {
+      const matchingLabels = Object.entries(highlight)
+        .filter(([key, value]) => key.startsWith('tag') && value === 1)
+        .map(([key]) => {
+          const tag = tags.find((t) => t.value === key);
+          return tag?.label;
+        })
+        .filter((label) => label);
+
+      const labelText = matchingLabels.join(', ');
+
       const escapedText = highlight.text.replace(
         /[-\/\\^$.*+?()[\]{}|~]/g,
         '\\$&'
-      ); // Escapar caracteres especiales
+      );
       updatedText = updatedText.replace(
         new RegExp(escapedText, 'g'),
-        `<span class="highlight">${highlight.text}</span>`
+        `<span class="highlight">${highlight.text}<span class="tooltip">${labelText}<br>${formatDate(highlight.timestamp)}</span></span>`
       );
     });
 
@@ -84,13 +103,12 @@ export const RightPanel = ({
       setTextRecords([...textRecords, newTextRecord]);
       setTagRecords([...tagRecords, newTagRecord]);
       updateHighlightedText([...textRecords, newTextRecord]); // Actualiza con todos los resaltados
+      setOpen(false);
     }
   };
 
   return (
     <>
-      {/* <Button onClick={() => setOpen(true)}>Open drawer</Button> */}
-
       <Drawer open={open} onClose={() => setOpen(false)} position="right">
         <Drawer.Items>
           <form
