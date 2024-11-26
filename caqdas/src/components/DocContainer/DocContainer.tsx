@@ -32,6 +32,7 @@ interface DocContainerProps {
   setHighlightedText: (highlightedText: string) => void;
   setCurrentText: (currentText: string) => void;
   textRecords: IText[];
+  setOriginalText: (originalText: string) => void;
 }
 
 /**
@@ -44,33 +45,32 @@ export const DocContainer = ({
   setHighlightedText,
   setCurrentText,
   textRecords,
+  setOriginalText,
 }: DocContainerProps) => {
   const handleMouseUp = () => {
     const selection = window.getSelection();
     const selectedText = selection ? selection.toString().trim() : '';
     if (selectedText) {
-      setCurrentText(selectedText); // Almacenar el texto seleccionado
-      setOpen(true); // Abrir el panel derecho
+      setCurrentText(selectedText);
+      setOpen(true);
     }
   };
 
   useEffect(() => {
     setHighlightedText(text);
+    setOriginalText(text);
   }, []);
 
   const handleTextClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
-    console.log('Click detected:', target);
-    console.log('Clases del elemento:', target.classList);
 
     if (target.classList.contains('highlight')) {
-      console.log('Subrayado clicado:', target);
       const id = target.getAttribute('data-id');
       if (id !== null) {
         const record = textRecords[parseInt(id)];
         if (record) {
-          setCurrentText(record.text); // Prellenar con el texto actual
-          setOpen(true); // Abrir el panel
+          setCurrentText(record.text);
+          setOpen(true);
           return;
         }
       }
@@ -79,13 +79,18 @@ export const DocContainer = ({
 
   return (
     <div className="doc">
-      <div
-        onMouseUp={handleMouseUp}
-        onClick={handleTextClick}
-        dangerouslySetInnerHTML={{
-          __html: highlightedText.replace(/\n/g, '<br/>'),
-        }}
-      />
+      <div className="flex-column-spacing">
+        <div className="large-title">The Hidden Treasure of the Forest</div>
+        <div className="p-6 border">
+          <div
+            onMouseUp={handleMouseUp}
+            onClick={handleTextClick}
+            dangerouslySetInnerHTML={{
+              __html: highlightedText.replace(/\n/g, '<br/>'),
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 };
