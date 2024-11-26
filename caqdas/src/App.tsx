@@ -18,13 +18,22 @@ const formatDate = (isoString: string): string => {
 function App() {
   const [open, setOpen] = useState(false);
   const [highlightedText, setHighlightedText] = useState('');
+  const [originalText, setOriginalText] = useState('');
   const [textRecords, setTextRecords] = useState<IText[]>([]);
   const [currentText, setCurrentText] = useState('');
 
-  const updateHighlightedText = (highlights: IText[]) => {
-    let updatedText = highlightedText;
+  const updateHighlightedText = (
+    highlights: IText[],
+    selectedStage?: string
+  ) => {
+    let updatedText = originalText;
 
-    highlights.forEach((highlight, index) => {
+    const filteredHighlights =
+      selectedStage && selectedStage !== ''
+        ? highlights.filter((highlight) => highlight.stage === selectedStage)
+        : highlights;
+
+    filteredHighlights.forEach((highlight, index) => {
       const matchingTags = Object.entries(highlight)
         .filter(([key, value]) => key.startsWith('tag') && value === 1)
         .map(([key]) => {
@@ -63,6 +72,7 @@ function App() {
         setHighlightedText={setHighlightedText}
         setCurrentText={setCurrentText}
         textRecords={textRecords}
+        setOriginalText={setOriginalText}
       />
       <RightPanel
         open={open}

@@ -54,7 +54,7 @@ export const RightPanel = ({
       setStage(currentRecord.stage || stages[0].value);
     } else {
       setSelectedRecord(null);
-      setTag(tags[0].value); // Valores predeterminados si no hay registro
+      setTag(tags[0].value);
       setStage(stages[0].value);
     }
   }, [currentText, textRecords]);

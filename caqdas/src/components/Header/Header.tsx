@@ -1,13 +1,15 @@
 import { Button } from 'flowbite-react';
-
+import { useState } from 'react';
 import { saveAs } from 'file-saver';
 import * as Papa from 'papaparse';
 import { IText } from '../../Interfaces';
+import { Select } from 'flowbite-react';
+import { stages } from '../../constants/stages';
 
 interface HeaderProps {
   textRecords: IText[];
   setTextRecords: (textRecords: IText[]) => void;
-  updateHighlightedText: (highlights: IText[]) => void;
+  updateHighlightedText: (highlights: IText[], selectedStage?: string) => void;
 }
 
 export const Header = ({
@@ -15,6 +17,7 @@ export const Header = ({
   setTextRecords,
   updateHighlightedText,
 }: HeaderProps) => {
+  const [stage, setStage] = useState('');
   /**
    * Download the text records as a CSV file.
    */
@@ -28,7 +31,7 @@ export const Header = ({
 
   const loadHighlightsFromCSV = async () => {
     try {
-      const response = await fetch('/highlights.csv'); // Asegúrate de que el archivo esté en la carpeta public
+      const response = await fetch('/highlights.csv');
       const text = await response.text();
       Papa.parse(text, {
         header: true,
@@ -61,11 +64,31 @@ export const Header = ({
     }
   };
 
+  const handleStageChange = (stage: string) => {
+    setStage(stage);
+    updateHighlightedText(textRecords, stage);
+  };
+
   return (
     <div style={{ backgroundColor: '#171717' }} className="p-4">
-      <div className="flex flex-row space-x-4">
-        <Button onClick={downloadTextRecordsCSV}>Download Highlights</Button>
-        <Button onClick={loadHighlightsFromCSV}>Load Highlights</Button>
+      <div className="flex flex-row justify-between">
+        <Select
+          id="stage"
+          value={stage}
+          onChange={(e) => handleStageChange(e.target.value)}
+          required
+        >
+          <option value="">All</option>
+          {stages.map((item) => (
+            <option key={item.value} value={item.value}>
+              {item.label}
+            </option>
+          ))}
+        </Select>
+        <div className="flex flex-row space-x-4">
+          <Button onClick={downloadTextRecordsCSV}>Download Highlights</Button>
+          <Button onClick={loadHighlightsFromCSV}>Load Highlights</Button>
+        </div>
       </div>
     </div>
   );

@@ -4,6 +4,17 @@
   padding: 2rem;
 }
 
+.flex-column-spacing {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.large-title {
+  font-size: 3rem;
+  line-height: 1;
+}
+
 .highlight {
   position: relative;
   border-radius: 4px;
