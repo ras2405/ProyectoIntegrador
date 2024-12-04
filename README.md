@@ -1,6 +1,6 @@
 # Proyecto CAQDAS
 
-Una aplicación web para análisis cualitativo que permite a los investigadores etiquetar y analizar documentos de texto, con énfasis en mejorar la visualización y experiencia del usuario.
+Una aplicación web para análisis cualitativo que permite a los investigadores etiquetar y analizar documentos de texto, con énfasis en mejorar la visualización y experiencia del usuario. [[1]](#ref1)
 
 ## Prerequisitos
 
@@ -123,3 +123,5 @@ import { NombreComponente } from "./components/NombreComponente/NombreComponente
 ```javascript
 <NombreComponente />
 ```
+
+<a id="ref1">[1]</a> R. Arour and D. Aysa, "Propuesta de visualización de etiquetado en herramientas de metodológicas cualitativas", Universidad ORT Uruguay, Montevideo, Uruguay, 2024 Available: https://www.overleaf.com/read/mmjtczghbytc#06931f
